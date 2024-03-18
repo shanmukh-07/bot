@@ -7,14 +7,47 @@
 </head>
 <body>
     <h1>Welcome to the Chatbot!</h1>
-    <form action="/chatbot" method="post">
-        <input type="text" name="user_input" placeholder="Type your message...">
+    <form id="chatForm" action="/chatbot" method="post">
+        <input type="text" id="userInput" name="user_input" placeholder="Type your message...">
         <button type="submit">Send</button>
     </form>
     <div id="chatbox">
-        {% if message %}
-        <p>{{ message }}</p>
-        {% endif %}
+        <!-- Chat messages will be added here dynamically -->
     </div>
+
+    <script>
+        document.getElementById("chatForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent default form submission
+            var userInput = document.getElementById("userInput").value; // Get user input
+            var chatbox = document.getElementById("chatbox"); // Get chatbox element
+
+            // Create a new paragraph element to display the user's message
+            var userMessage = document.createElement("p");
+            userMessage.textContent = userInput;
+            chatbox.appendChild(userMessage); // Append the user's message to the chatbox
+
+            // Send the user input to the server using fetch API
+            fetch("/chatbot", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ user_input: userInput })
+            })
+            .then(response => response.json()) // Parse the JSON response from the server
+            .then(data => {
+                // Create a new paragraph element to display the server's response
+                var serverResponse = document.createElement("p");
+                serverResponse.textContent = data.response;
+                chatbox.appendChild(serverResponse); // Append the server's response to the chatbox
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+
+            // Clear the input field after submitting
+            document.getElementById("userInput").value = "";
+        });
+    </script>
 </body>
 </html>
