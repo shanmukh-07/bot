@@ -39,5 +39,5 @@ def chatbot():
     return render_template('index.html', message=bot_response)
 
 if __name__ == '__main__':
-    # Run Flask app on localhost:5000
-    app.run(debug=True, port=5000)
+    # Run Flask app on localhost:8081
+    app.run(debug=True, port=8081)
